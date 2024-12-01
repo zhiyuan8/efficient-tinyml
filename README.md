@@ -133,3 +133,153 @@ struct Rectangle {
   let rect = Rectangle { width: 30, height: 50 };
   println!("Area: {}", rect.area());
   ```
+
+# Rust Memory System : Ownership, Borrowing, and Lifetimes
+
+## Ownership
+
+Ownership is a set of rules that governs how a Rust program manages memory. The key principles of ownership are:
+
+1. **Each value in Rust has a variable that's called its owner.**
+2. **There can only be one owner at a time.**
+3. **When the owner goes out of scope, the value will be dropped.**
+
+Example:
+```rust
+{
+    let s = String::from("hello"); // s is the owner of the String
+    // s can be used here
+} // s goes out of scope and the String is dropped
+```
+
+## Borrowing
+
+Borrowing allows you to have references to data without taking ownership. There are two types of borrowing:
+
+- **Immutable Borrowing**: Allows multiple read-only references.
+- **Mutable Borrowing**: Allows a single read-write reference.
+
+Example:
+```rust
+fn main() {
+    let s = String::from("hello");
+
+    // Immutable borrow
+    let len = calculate_length(&s);
+    println!("The length of '{}' is {}.", s, len);
+
+    // Mutable borrow
+    let mut s = String::from("hello");
+    change(&mut s);
+    println!("Changed string: {}", s);
+}
+
+fn calculate_length(s: &String) -> usize {
+    s.len()
+}
+
+fn change(s: &mut String) {
+    s.push_str(", world");
+}
+```
+
+## Lifetimes
+
+Lifetimes are a way of describing the scope for which a reference is valid. They ensure that references do not outlive the data they point to. In C++, you might have a pointer to a variable, and if that variable goes out of scope, the pointer becomes a dangling pointer. Rust's lifetimes ensure that this situation doesn't happen by checking at compile time that all references are valid.
+
+Example:
+```rust
+fn main() {
+    let string1 = String::from("hello");
+    let string2 = String::from("world");
+
+    let result = longest(&string1, &string2);
+    println!("The longest string is '{}'", result);
+}
+
+fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
+    if x.len() > y.len() {
+        x
+    } else {
+        y
+    }
+}
+```
+
+Function longest: This function takes two string slices (&str) and returns the longest one. The 'a is a lifetime parameter that tells Rust that the returned reference will be valid as long as both input references are valid.
+
+### Key Points
+
+- **Ownership** ensures memory safety without a garbage collector.
+- **Borrowing** allows you to use data without taking ownership.
+- **Lifetimes** prevent dangling references by ensuring references are valid.
+
+These concepts are fundamental to Rust's memory safety guarantees and help prevent common bugs such as null pointer dereferencing and data races.
+
+
+# Modules
+
+Three ways to define modules in Rust:
+
+1. **Create a `mod` in an existing file.**
+
+   You can define a module directly within an existing file using the `mod` keyword. Functions, structs, enums, etc., must have `pub` to be accessed outside the module.
+
+   ```rust
+   mod my_module {
+       pub fn say_hello() {
+           println!("Hello from my_module!");
+       }
+   }
+
+   fn main() {
+       my_module::say_hello();
+   }
+   ```
+
+2. **Create a module in a new single file in the same folder.**
+
+   You can create a new file named `my_module.rs` in the same directory as your main file. In `my_module.rs`, define your module:
+
+   ```rust
+   // my_module.rs
+   pub fn say_hello() {
+       println!("Hello from my_module!");
+   }
+   ```
+
+   Then, in your main file, include the module:
+
+   ```rust
+   // main.rs
+   mod my_module;
+
+   fn main() {
+       my_module::say_hello();
+   }
+   ```
+
+3. **Split a module into multiple files.**
+
+   You can organize a module into multiple files by creating a directory with the module's name and placing a `mod.rs` file inside it. For example, create a directory `my_module` with a `mod.rs` file:
+
+   ```rust
+   // my_module/mod.rs
+   pub mod greetings;
+
+   // my_module/greetings.rs
+   pub fn say_hello() {
+       println!("Hello from greetings!");
+   }
+   ```
+
+   In your main file, include the module:
+
+   ```rust
+   // main.rs
+   mod my_module;
+
+   fn main() {
+       my_module::greetings::say_hello();
+   }
+   ```
