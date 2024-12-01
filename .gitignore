@@ -1,0 +1,41 @@
+# Ignore the target directory, which contains compiled files and build artifacts
+/target/
+
+# Ignore Cargo.lock if you're building a library
+# (this file is generated automatically and should not be committed for libraries)
+/Cargo.lock
+
+# Ignore any files related to incremental compilation
+**/incremental/
+
+# Ignore any files related to build scripts
+**/build/
+
+# Ignore any files related to examples
+**/examples/
+
+# Ignore any files related to dependencies
+**/deps/
+
+# Ignore any other generated files
+*.d
+*.rlib
+*.rmeta
+*.so
+*.o
+
+# Ignore CACHEDIR.TAG
+CACHEDIR.TAG
+
+# Ignore any other temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
+*.old
+
+# Ignore editor-specific files
+*.vscode/
+*.idea/
+*.DS_Store
